@@ -1,0 +1,26 @@
+/*
+ Theme Name: TowerForms
+ Text Domain: Sudarshan
+ Version: 1.0
+ Description: Tower forms custom post
+ Tags: responsive, tower
+ Author: Sudarshan Shakya
+ Author URI: https://github.com/sam38/repo.git
+ */
+
+body {
+    background-color: #EEEEEE;
+}
+
+.spin {
+    animation: spin 3s linear infinite;
+}
+ 
+@keyframes spin {
+    from {
+        transform:rotate(0deg);
+    }
+    to {
+        transform:rotate(360deg);
+    }
+}
