@@ -11,7 +11,9 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="/">Tower</a>
+        <a class="navbar-brand" href="/">
+            <img src="<?php echo get_template_directory_uri() . '/assets/images/favicon.png'; ?>" alt="Tower"> Tower
+        </a>
     </nav>
 
     <main role="main" class="container pt-5 mt-5">
@@ -63,6 +65,10 @@
             </div><!-- /.col -->
         </div><!-- /.row -->
     </main><!-- /.container -->
+
+    <footer class="mt-5 mb-3 text-center text-muted">
+        <small>By <a href="https://github.com/sam38/tower" target="_blank">Sudarshan Shakya</a></small>
+    </footer>
 
     <?php wp_footer(); ?>
 </body>

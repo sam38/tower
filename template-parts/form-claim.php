@@ -1,4 +1,4 @@
-<form action="tower_claims" class="card validate-form" method="post" novalidate>
+<form action="tower_claims" class="card validate-form shadow" method="post" novalidate>
     <div class="card-header">Insurance Policy Claim</div>
     <div class="card-body">
         <div class="form-group">
