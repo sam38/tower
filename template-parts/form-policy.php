@@ -11,7 +11,6 @@
                 placeholder="Enter policy name"
                 maxlength="250"
                 data-validate="required"
-                value="test"
                 required
             />
         </div>
@@ -42,7 +41,6 @@
                 aria-describedby="basic-addon1"
                 maxlength="10"
                 data-validate="required|date"
-                value="08/06/2021"
                 required
             />
             <small id="policyDateHelp" class="form-text text-muted"
@@ -56,7 +54,7 @@
                 name="policy-description" 
                 rows="5"
                 maxlength="1200"
-            >test</textarea>
+            ></textarea>
         </div>
         <div class="form-group mt-3">
             <button type="submit" class="btn btn-primary mt-3">Submit</button>
