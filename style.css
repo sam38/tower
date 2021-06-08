@@ -12,6 +12,18 @@ body {
     background-color: #EEEEEE;
 }
 
+.invisible {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+}
+
+/* add margin-top to accomodate fixed header */
+.offset-nav {
+    margin-top: 3.7rem;
+}
+
 .spin {
     animation: spin 3s linear infinite;
 }

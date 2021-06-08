@@ -1,18 +1,17 @@
 // Initialize the app when page is ready
 $(document).ready(function() {
-
-	const regexEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	const regexDate = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
 	
-
-	// 
-	const validate = function(e) {
+    // this function will validate the form and post to via AJAX.
+	const validateAndPost = function(e) {
 		e.preventDefault();
 		
 		const $form = $(this);
+        // disable buttons
+        const $buttons = $form.find('button');
+        $buttons.attr('disabled', 'disabled');
 
 		// Clear previous error and validate each field
-		$form.find('.invalid-feedback').remove();
+		$form.find('.invalid-feedback, .alert').remove();
 		$form.find('.form-control').removeClass('is-invalid').each(function(e, elm) {
 			let $field = $(elm),
 				validationRules = $field.data('validate'),
@@ -26,10 +25,18 @@ $(document).ready(function() {
 					if (fieldIsValid) {
 						switch (rule) {
 							case 'date':
-								fieldIsValid = regexDate.test(value);
-								validationError = 'Incorrect Date format.';
+                                // date should be in the format DD/MM/YYYY e.g. 21/1/2020
+                                validationError = 'Incorrect Date format.';
+                                fieldIsValid = false;
+                                const dateParts = value.split('/');
+                                if (dateParts.length === 3 
+                                    && Date.parse(dateParts.reverse().join('-')) // YYYY-MM-DD
+                                ) {
+                                    fieldIsValid = true;
+                                }
 								break;
 							case 'email':
+                                const regexEmail = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 								fieldIsValid = regexEmail.test(value);
 								validationError = 'Enter a valid email address.';
 								break;
@@ -50,21 +57,55 @@ $(document).ready(function() {
 				}
 			}
 		});
-		if ($form.find('.form-control.is-invalid').length) return false;
+		if ($form.find('.form-control.is-invalid').length) {
+            $buttons.removeAttr('disabled');
+            return false;
+        }
 
-		// if form validation passes, then complete AJAX request
+		// perform AJAX request
 		$.post(
-			getAPIUrl($form.attr('action')), 
+			`/wp-json/tower-forms/v1/form?type=${$form.attr('action')}`, 
 			$form.serialize()
-		);
-		return false;
+		).done(function(data) {
+            if (data.success) {
+                // form persisted!
+                $form.trigger('reset');
+                // add alert box
+                $form.find('.card-body')
+                    .prepend(`
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="far fa-check-circle"></i> Your form has been submitted.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                `);
+            } else {
+                // backend error - display error to associated field
+                for (let fieldName in data.errors) {
+                    $form.find(`.form-control[name="${fieldName}"]`)
+                        .addClass('is-invalid')
+                        .parent().append(`
+                            <small class="invalid-feedback">
+                                ${data.errors[fieldName]}
+                            </small>
+                        `);
+                }
+            }
+            // $form.reset();
+        }).fail(function(error) {
+            alert('Unable to complete your request!\r\nCheck console for detail');
+            console.error(error);
+        }).always(function() {
+            $buttons.removeAttr('disabled');
+        });
 	};
 
 	// find all forms which requires validation
 	const $forms = $('form.validate-form');
 
-	// Disable HTML5 validation
-	$forms.attr('novalidate', 'novalidate').bind('submit', validate);
+	// Disable default HTML5 validation
+	$forms.attr('novalidate', 'novalidate').bind('submit', validateAndPost);
 
 	// Load `Claims` form via AJAX
 	const $btnClaimsForm = $('#btn-form-claim');
@@ -77,20 +118,19 @@ $(document).ready(function() {
 				// Add the form HTML to the DOM and bind form events
 				$('#tab-claim').html(data)
 					.find('form.validate-form')
-					.bind('submit', validate);
+					.bind('submit', validateAndPost);
 			},
 			error: function(error) {
-				alert('Unable to load form! Check console for details.');
+                $('#tab-claim').html(`
+                    <h4 class="text-danger">
+                        <i class="fas fa-exclamation-triangle"></i> Failed to load!
+                    </h4>
+                    <p>Make sure your Permalink settings is set to "Post name".</p>
+                `);
 				console.error(error);
 			}
 		});
 		// Unbind AJAX load for future requests
 		$btnClaimsForm.off();
 	});
-
-	// A helper function to return full API URL with appended URI
-	function getAPIUrl(uri) {
-		// e.g. http://forms.tower.co.nz/wp-json/wp/v2/...
-		return `/wp-json/wp/v2/${uri}`;
-	}
 });

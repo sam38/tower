@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="https://github.com/sam38">
     <link rel="icon" href="<?php get_template_directory_uri() . '/assets/images/favicon.png'; ?>">
-
+    <title>Tower Forms</title>
     <?php wp_head(); ?>
 </head>
 <body>
@@ -16,10 +16,15 @@
         </a>
     </nav>
 
-    <main role="main" class="container pt-5 mt-5">
+    <main role="main" class="container offset-nav pt-5 mb-5">
         <div class="row">
-            <div class="col-3">
-                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <div class="col-md-3">
+                <div 
+                    class="nav flex-md-column nav-pills" 
+                    id="v-pills-tab" 
+                    role="tablist" 
+                    aria-orientation="vertical"
+                >
                     <a 
                         id="btn-form-policy" 
                         class="nav-link active" 
@@ -41,7 +46,7 @@
                     >Insurance Policy Claim</a>
                 </div>
             </div><!-- /.col-3 -->
-            <div class="col">
+            <div class="col mt-5 mt-md-0">
                 <div class="tab-content" id="v-pills-tabContent">
                     <div 
                         class="tab-pane fade show active" 
@@ -66,7 +71,7 @@
         </div><!-- /.row -->
     </main><!-- /.container -->
 
-    <footer class="mt-5 mb-3 text-center text-muted">
+    <footer class="mb-3 text-center text-muted">
         <small>By <a href="https://github.com/sam38/tower" target="_blank">Sudarshan Shakya</a></small>
     </footer>
 
